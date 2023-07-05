@@ -12,7 +12,7 @@ class MailSender {
     });
   }
 
-  sendEmail(targetEmail, playlistId, playlistName, content) {
+  sendEmail(targetEmail, playlistName, content) {
     const message = {
       from: '"Open Music V3" <no-reply@open-music.com>',
       to: targetEmail,
@@ -20,7 +20,7 @@ class MailSender {
       text: `Terlampir hasil ekspor lagu dari playlist ${playlistName}`,
       attachments: [
         {
-          filename: `${playlistId}.json`,
+          filename: 'playlist.json',
           content,
         },
       ],
