@@ -7,13 +7,13 @@ class PlaylistSongsService {
 
   async getPlaylistNameById(Id) {
     const query = {
-      text: 'SELECT name FROM playlists WHERE id = $1',
+      text: 'SELECT * FROM playlists WHERE id = $1',
       values: [Id],
     };
 
     const result = await this._pool.query(query);
 
-    return result.rows[0].name;
+    return result.rows[0];
   }
 
   async getPlaylistSongs(playlistId) {
@@ -22,19 +22,20 @@ class PlaylistSongsService {
       values: [playlistId],
     };
 
-    const resultQuery = {
+    const resultPlaylist = await this._pool.query(resultPlaylistQuery);
+
+    const resultSongsQuery = {
       text: `SELECT songs.id, songs.title, songs.performer
-      FROM songs
-      JOIN playlist_songs
+      FROM playlist_songs
+      LEFT JOIN songs
       ON songs.id = playlist_songs.song_id
       WHERE playlist_songs.playlist_id = $1`,
       values: [playlistId],
     };
 
-    const resultPlaylist = await this._pool.query(resultPlaylistQuery);
-    const result = await this._pool.query(resultQuery);
+    const resultSongs = await this._pool.query(resultSongsQuery);
 
-    return { ...resultPlaylist.rows[0], songs: result.rows };
+    return { ...resultPlaylist.rows[0], songs: resultSongs.rows };
   }
 }
 

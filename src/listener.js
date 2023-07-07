@@ -12,17 +12,13 @@ class PlaylistListener {
         message.content.toString()
       );
 
-      const playlistName = await this._playlistSongsService.getPlaylistNameById(
-        playlistId
-      );
       const playlist = await this._playlistSongsService.getPlaylistSongs(
         playlistId
       );
 
       const result = await this._mailSender.sendEmail(
         targetEmail,
-        playlistName,
-        JSON.stringify(playlist)
+        JSON.stringify({ playlist })
       );
       console.log(result);
     } catch (error) {
